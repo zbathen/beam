@@ -23,6 +23,7 @@ import copy
 import inspect
 import logging
 import random
+import re
 import types
 import typing
 
@@ -1306,6 +1307,10 @@ class ParDo(PTransformWithSideInputs):
       ValueError: if **main_kw** contains any key other than
         ``'main'``.
     """
+    for tag in tags:
+      if not re.match(r'[_a-zA-Z]+[_a-zA-Z0-9]*', tag):
+        raise ValueError(
+          'Invalid tag %s. Tags must be valid Python identifiers.' % tag)
     main_tag = main_kw.pop('main', None)
     if main_tag in tags:
       raise ValueError(
